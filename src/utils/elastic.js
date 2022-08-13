@@ -1,8 +1,7 @@
+require("dotenv").config();
 const { Client } = require('@elastic/elasticsearch');
 const request = require('request-promise-native');
-const fs = require('fs');
-const util = require('util');
-const elasticUrl = 'http://localhost:9200';
+const elasticUrl = "http://host.docker.internal:9200";
 const esclient = new Client({ node: elasticUrl });
 const elasticIndex = 'quote';
 const type = 'text';
@@ -12,17 +11,17 @@ const checkConnection = () => {
     return new Promise(async (resolve) => {
         console.log('Checking connection to ElasticSearch...');
         let isConnected = false;
-
         while (!isConnected) {
             try {
-                await esclient.cluster.health({});
+                const a = await esclient.cluster.health({});
+                console.log("a", a)
                 console.log(
                     'Successfully connected to ElasticSearch'
                 );
                 isConnected = true;
-
-                // eslint-disable-next-line no-empty
-            } catch (_) {}
+            } catch (err) {
+                console.log(err)
+            }
         }
         resolve(true);
     });
