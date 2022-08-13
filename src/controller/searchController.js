@@ -3,13 +3,13 @@ const elastic = require('../utils/elastic');
 const buildQuery = (key, value) => {
     if (value == undefined) {
         return {
-        query: {
-            match_all: {}
-        }
+            query: {
+                match_all: {}
+            }
         };
     } else {
         const matchObj = {
-        query: { match: {} }
+            query: { match: {} }
         };
         matchObj.query.match[key] = value;
         return matchObj;
@@ -34,10 +34,10 @@ exports.query = async (req, res, next) => {
     const metadata = [];
     if (resultBody.hits.total.value > 0) {
         for (let i of resultBody.hits.hits) {
-        const src = {};
-        src['file'] = i._id;
-        src['content'] = i._source;
-        metadata.push(src);
+            const src = {};
+            src['file'] = i._id;
+            src['content'] = i._source;
+            metadata.push(src);
         }
     }
     const result = {
