@@ -1,14 +1,35 @@
-const express = require("express");
+const express = require('express');
+const elastic = require('./utils/elastic');
 
-const indexerRouter = require("./routes/indexer/index")
-const searcherRouter = require("./routes/searcher/index")
-
+// const indexerRouter = require('./router/indexer/index');
+const searcherRouter = require('./router/searcher');
 const app = express();
 
-app.use('/api/v1/index', indexerRouter)
-app.use('/api/v1/search', searcherRouter)
+const start = () => {
+  // app.use('/api/v1/index', indexerRouter);
+  app.use('/api/v1/search', searcherRouter);
 
-const port = 3000
-app.listen(port, () => {
+  const port = 3000;
+  app.listen(port, () => {
     console.log(`App running on port ${port} ...`);
-});
+  });
+};
+
+const main = async () => {
+  const isElasticReady = await elastic.checkConnection();
+  if (isElasticReady) {
+    const elasticIndex = await elastic.esclient.indices.exists({
+      index: elastic.elasticIndex,
+    });
+    if (!elasticIndex) {
+      await elastic.createIndex();
+      await elastic.createMapping();
+      await elastic.syncFiles();
+    } else {
+      console.log('exists');
+    }
+    start()
+  }
+};
+
+main();
