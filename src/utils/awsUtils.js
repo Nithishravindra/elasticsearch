@@ -24,12 +24,14 @@ const listObjectsInBucket = async () => {
 };
 
 const readFileContentsFromS3 = async(file) => {
-    const params = { Bucket: BUCKET_NAME, Key: file };
-    const data = await s3.getObject(params).promise();
-
-    console.log(data.Body)
-    console.log(data.Body.toString())
-    return data.Body.toString()
+    try {
+        const params = { Bucket: BUCKET_NAME, Key: file };
+        const data = await s3.getObject(params).promise();
+        return data.Body.toString()
+    } catch(err) {
+        console.log(err)
+        return err
+    }
 };
 
 module.exports = { 

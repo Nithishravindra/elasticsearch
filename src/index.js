@@ -1,12 +1,12 @@
 const express = require('express');
 const elastic = require('./utils/elastic');
 
-// const indexerRouter = require('./router/indexer/index');
+const indexerRouter = require('./router/indexer');
 const searcherRouter = require('./router/searcher');
 const app = express();
 
 const start = () => {
-    // app.use('/api/v1/index', indexerRouter);
+    app.use('/api/v1/index', indexerRouter);
     app.use('/api/v1/search', searcherRouter);
 
     const port = 3000;

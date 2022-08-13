@@ -79,12 +79,12 @@ const syncFiles = async () => {
     for (let file of files) {
         const data = await awsUtils.readFileContentsFromS3(file);
         let [title, ...body] = data.toString().split('\n');
-        let result = await index(file, title, body);
+        let result = await IndexRecord(file, title, body);
         console.log('Indexing result: ', result);
     }
 };
 
-async function index(fid, title, body) {
+async function IndexRecord(fid, title, body) {
     let url = `http://localhost:9200/${elasticIndex}/_doc/` + fid;
     let payload = {
         url: url,
@@ -101,6 +101,7 @@ module.exports = {
     createIndex,
     createMapping,
     syncFiles,
+    IndexRecord,
     esclient,
     elasticIndex
 };
