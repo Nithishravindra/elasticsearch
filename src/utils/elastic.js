@@ -1,11 +1,12 @@
 const { Client } = require('@elastic/elasticsearch');
+const request = require('request-promise-native');
 const fs = require('fs');
 const util = require('util');
 const elasticUrl = 'http://localhost:9200';
-const request = require('request-promise-native');
 const esclient = new Client({ node: elasticUrl });
 const elasticIndex = 'quote';
 const type = 'text';
+const awsUtils = require('./awsUtils');
 
 const checkConnection = () => {
     return new Promise(async (resolve) => {
@@ -72,30 +73,19 @@ const createMapping = async () => {
 };
 
 const syncFiles = async () => {
-    let files = [
-        '60052-0.txt',
-        '60062-0.txt',
-        '60063-0.txt',
-        'pg60060.txt'
-    ];
-    const readFile = util.promisify(fs.readFile);
+    let files = await awsUtils.listObjectsInBucket();
+    console.log(files);
 
-    files.forEach(async (f) => {
-        let book = await readFile(
-            '/Users/nithishr/c/elasticsearch-node/src/books/' + f
-        );
-        [title, ...body] = book.toString().split('\n');
-        try {
-            let result = await indexBook(f, title, body);
-            console.log('Indexing result: ', result);
-        } catch (err) {
-            console.log('ERROR: ', err);
-        }
-    });
+    for (let file of files) {
+        const data = await awsUtils.readFileContentsFromS3(file);
+        let [title, ...body] = data.toString().split('\n');
+        let result = await index(file, title, body);
+        console.log('Indexing result: ', result);
+    }
 };
 
-async function indexBook(fid, title, body) {
-    let url = 'http://localhost:9200/quote/_doc/' + fid;
+async function index(fid, title, body) {
+    let url = `http://localhost:9200/${elasticIndex}/_doc/` + fid;
     let payload = {
         url: url,
         body: {
