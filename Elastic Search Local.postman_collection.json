@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "a218d0c4-0601-4771-a220-7f9b6a790a11",
+		"name": "Elastic Search Local",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "13964289"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:9200/_cat/health?v",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9200",
+					"path": [
+						"_cat",
+						"health"
+					],
+					"query": [
+						{
+							"key": "v",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Multi Match Search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": { \"match\": { \"title\": \"hello\" }}\n}\n\nmulti_match: {\n          query: 'Bradford',\n          fields: ['title', 'authors.*name'],\n          minimum_should_match: 3,\n          fuzziness: 2\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:9200/quote/_search"
+			},
+			"response": []
+		},
+		{
+			"name": "Indicies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:9200/_cat/indices?v",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9200",
+					"path": [
+						"_cat",
+						"indices"
+					],
+					"query": [
+						{
+							"key": "v",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Index File",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:3000/api/v1/index/60062-0.txt"
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/v1/search/?title=hello",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"search",
+						""
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "hello"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Indicies",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://127.0.0.1:9200/quotes"
+			},
+			"response": []
+		}
+	]
+}
