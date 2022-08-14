@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import Card from './Card';
 import '../style/app.css';
 
@@ -17,13 +17,11 @@ function Search() {
         fetchData();
     }, [setData]);
 
-    // console.log(allData);
-
     const { register, handleSubmit } = useForm();
     const handleRegistration = async (data) => {
-        let params = url.concat("?", data.field, "=",data.search)
-        console.log(params)
-        setUrl(params)
+        let params = url.concat('?', data.field, '=', data.search);
+        console.log(params);
+        setUrl(params);
         const res = await fetch(url);
         const json = await res.json();
         setData(json.data.hits);
@@ -37,33 +35,35 @@ function Search() {
             <div className="pa2">
                 <form onSubmit={handleSubmit(handleRegistration)}>
                     <input
-                        className="pa3 bb br3 grow b--none bg-lightest-blue ma3"
+                        className="pa3 bb br3 grow b--none bg-lightest-blue ma3 search_box"
                         type="search"
                         placeholder="Search"
-                        name="search" 
+                        name="search"
                         {...register('search')}
                     />
-                    <select {...register("field")}>
-                        {/* <option value="All">All</option> */}
+                    <select
+                        className="select_dropdown"
+                        {...register('field')}
+                    >
                         <option value="title">Title</option>
                         <option value="body">Body</option>
                     </select>
-                    <button>Submit</button>
+                    <button className="select_dropdown">
+                        Submit
+                    </button>
                 </form>
             </div>
-            <div className="_card">
-                {allData.map((item) => (
-                    <div key={item.file}>
-                        {/* <Card key="a" person="a" /> */}
+            <div className="_cards">
+                <ol className="card-wrapper">
+                    {allData.map((item) => (
                         <Card
+                            key={item.file}
                             fileName={item.file}
                             title={item.content.title}
                             body={item.content.body}
                         />
-
-                        {/* <a href={item.url}>{item.title}</a> */}
-                    </div>
-                ))}
+                    ))}
+                </ol>
             </div>
         </section>
     );
