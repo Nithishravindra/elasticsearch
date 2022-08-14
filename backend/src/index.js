@@ -1,11 +1,12 @@
 const express = require('express');
 const elastic = require('./utils/elastic');
-
+const cors = require('cors')
 const indexerRouter = require('./router/indexer');
 const searcherRouter = require('./router/searcher');
 const app = express();
 
 const start = () => {
+    app.use(cors())
     app.use('/api/v1/index', indexerRouter);
     app.use('/api/v1/search', searcherRouter);
 
