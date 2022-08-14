@@ -18,14 +18,13 @@ const myBucket = new AWS.S3({
 });
 
 const UploadImageToS3WithNativeSdk = () => {
-    const [progress, setProgress] = useState(0);
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleFileInput = (e) => {
         setSelectedFile(e.target.files[0]);
     };
 
-    const uploadFile = (file) => {
+    const uploadFile = async (file) => {
         const params = {
             ACL: 'public-read',
             Body: file,
@@ -38,27 +37,27 @@ const UploadImageToS3WithNativeSdk = () => {
             return;
         }
 
-        myBucket
-            .putObject(params)
-            .on('httpUploadProgress', (evt) => {
-                setProgress(
-                    Math.round((evt.loaded / evt.total) * 100)
-                );
-            })
-            .send((err) => {
-                if (err) console.log(err);
-            });
-
+        const uploader = await myBucket.putObject(params).promise();
+        if (uploader.$response.httpResponse.statusCode!== 200) {
+            console.log(uploader);
+            alert('failed to upload file');
+        }
         const handleUpload = async () => {
-            const res = await axios.post(`http://localhost:3000/api/v1/index/${file.name}`)
-            console.log(res)            
+            const res = await axios.post(
+                `http://localhost:3000/api/v1/index/${file.name}`
+            );
+            console.log('res', res);
+            if (res.status === 200) {
+                alert('File uploaded and indexed successfully.')
+            }
         };
-        handleUpload()
+
+        await handleUpload();
     };
 
     return (
         <div>
-            <div>Native SDK File Upload Progress is {progress}%</div>
+            {/* <div>Native SDK File Upload Progress is {progress}%</div> */}
             <div className="fileUpload">
                 <input type="file" onChange={handleFileInput} />
                 <button onClick={() => uploadFile(selectedFile)}>
