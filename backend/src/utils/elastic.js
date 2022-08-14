@@ -84,7 +84,7 @@ const syncFiles = async () => {
 };
 
 async function IndexRecord(fid, title, body) {
-    let url = `http://localhost:9200/${elasticIndex}/_doc/` + fid;
+    let url = `http://host.docker.internal:9200/${elasticIndex}/_doc/` + fid;
     let payload = {
         url: url,
         body: {
